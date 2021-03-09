@@ -1,7 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import logging
-from scrapy.shell import inspect_response
+from scrapy.shell import open_in_browser
 
 class CountriesSpider(scrapy.Spider):
     name = 'countries'
@@ -11,9 +11,9 @@ class CountriesSpider(scrapy.Spider):
     def parse(self, response):
         # title = response.xpath('//h1/text()').get()
         countries = response.xpath('//td/a')
-        for country in countries:
-            name = country.xpath('.//text()').get()
-            link = country.xpath('.//@href').get()
+        # for country in countries:
+        #     name = country.xpath('.//text()').get()
+        #     link = country.xpath('.//@href').get()
             # yield {
             #     'country_name': name,
             #     'country_link': link
@@ -21,11 +21,13 @@ class CountriesSpider(scrapy.Spider):
             # absolute_url = f"https://www.worldometers.info{link}"
             # absolute_url = response.urljoin(link)
             # yield scrapy.Request(url=absolute_url)
-            yield response.follow(url=link,callback=self.parse_country, meta ={'country_name':name})
+            # yield response.follow(url=link,callback=self.parse_country, meta ={'country_name':name})
+        yield response.follow(url='https://www.worldometers.info/world-population/china-population/',callback=self.parse_country, meta ={'country_name':'China'})
 
     def parse_country(self, response):
         # logging.info(response.url)
-        inspect_response(response,self)
+        # inspect_response(response,self)
+        open_in_browser(response)
         # rows = response.xpath("(//table[@class='table table-striped table-bordered table-hover table-condensed table-list'])[1]/tbody/tr")
         # for row in rows:
         #     year = row.xpath(".//td[1]/text()").get()
