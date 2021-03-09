@@ -1,6 +1,7 @@
 # -*- coding: utf-8 -*-
 import scrapy
 import logging
+from scrapy.shell import inspect_response
 
 class CountriesSpider(scrapy.Spider):
     name = 'countries'
@@ -24,12 +25,13 @@ class CountriesSpider(scrapy.Spider):
 
     def parse_country(self, response):
         # logging.info(response.url)
-        rows = response.xpath("(//table[@class='table table-striped table-bordered table-hover table-condensed table-list'])[1]/tbody/tr")
-        for row in rows:
-            year = row.xpath(".//td[1]/text()").get()
-            population = row.xpath(".//td[2]/strong/text()").get()
-            yield {
-                'year': year,
-                'populations': population,
-                'name': response.request.meta['country_name']
-            }
+        inspect_response(response,self)
+        # rows = response.xpath("(//table[@class='table table-striped table-bordered table-hover table-condensed table-list'])[1]/tbody/tr")
+        # for row in rows:
+        #     year = row.xpath(".//td[1]/text()").get()
+        #     population = row.xpath(".//td[2]/strong/text()").get()
+        #     yield {
+        #         'year': year,
+        #         'populations': population,
+        #         'name': response.request.meta['country_name']
+        #     }
