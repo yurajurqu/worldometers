@@ -25,9 +25,10 @@ class CountriesSpider(scrapy.Spider):
         yield response.follow(url='https://www.worldometers.info/world-population/china-population/',callback=self.parse_country, meta ={'country_name':'China'})
 
     def parse_country(self, response):
-        # logging.info(response.url)
+        logging.info(response.status)
         # inspect_response(response,self)
-        open_in_browser(response)
+        # open_in_browser(response)
+
         # rows = response.xpath("(//table[@class='table table-striped table-bordered table-hover table-condensed table-list'])[1]/tbody/tr")
         # for row in rows:
         #     year = row.xpath(".//td[1]/text()").get()
