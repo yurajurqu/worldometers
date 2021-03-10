@@ -6,6 +6,7 @@
 # See: https://doc.scrapy.org/en/latest/topics/item-pipeline.html
 import logging
 import pymongo
+import sqlite3
 
 class MongodbPipeline(object):
     collection_name = "best_movies"
@@ -21,7 +22,41 @@ class MongodbPipeline(object):
         logging.warning('SPIDER CLOSED FROM PIPELINE')
         self.client.close()
     
-    # @classmethod
-    # def from_crawler(cls, crawler):
-    #     #used to read settings.json file variables
-    #     logging.warning(crawler.settings.get("MONGO_URL"))
+class SqlitePipeline(object):
+    def process_item(self, item, spider):
+        self.c.execute('''
+        INSERT INTO best_movies (title,year, duration,genre,rating,movie_url)
+        values (?,?,?,?,?,?)
+        ''',(
+            item.get('title'),
+            item.get('year'),
+            item.get('duration'),
+            item.get('genre'),
+            item.get('rating'),
+            item.get('movie_url')
+        ))
+        self.connection.commit()
+        return item
+    def open_spider(self, spider):
+        logging.warning('SPIDER OPENED FROM PIPELINE')
+        self.connection = sqlite3.connect("imdb.db")
+        self.c = self.connection.cursor()
+
+
+        
+        self.c.execute('''
+            CREATE TABLE best_movies (
+                title TEXT,
+                year TEXT,
+                duration TEXT,
+                genre TEXT,
+                rating TEXT,
+                movie_url TEXT
+            );
+        ''')
+        self.connection.commit()
+
+    def close_spider(self, spider):
+        self.connection.close()
+    
+
