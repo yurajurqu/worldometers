@@ -43,18 +43,20 @@ class SqlitePipeline(object):
         self.c = self.connection.cursor()
 
 
-        
-        self.c.execute('''
-            CREATE TABLE best_movies (
-                title TEXT,
-                year TEXT,
-                duration TEXT,
-                genre TEXT,
-                rating TEXT,
-                movie_url TEXT
-            );
-        ''')
-        self.connection.commit()
+        try:
+            self.c.execute('''
+                CREATE TABLE best_movies (
+                    title TEXT,
+                    year TEXT,
+                    duration TEXT,
+                    genre TEXT,
+                    rating TEXT,
+                    movie_url TEXT
+                );
+            ''')
+            self.connection.commit()
+        except sqlite3.OperationalError:
+            pass
 
     def close_spider(self, spider):
         self.connection.close()
